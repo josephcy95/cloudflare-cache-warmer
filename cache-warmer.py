@@ -31,7 +31,7 @@ def get_url_list(url):
 
 async def get(url, session, proxy, no_output):
     try:
-        async with session.get(url=url,proxy=proxy) as response:
+        async with session.get(url=url,proxy=proxy,timeout=5) as response:
             resp = await response.read()
             if not no_output:
                 print(f"{url} -> {response.status} {response.headers['CF-Cache-Status']}")
