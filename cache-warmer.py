@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-"""
-Warm the caches of your website by crawling each page defined in sitemap.xml.
-To use, download this file and make it executable. Then run:
-./cache-warmer.py --url https://example.com/sitemap.xml -p "http://username:password@myproxy.host.com:8080"
-"""
+
 import sys
 import argparse
 import re
@@ -15,7 +11,7 @@ import time
 def parse_options():
     parser = argparse.ArgumentParser(description="""Cache crawler""")
     parser.add_argument('-u', '--url', help='The sitemap xml url', required=True, type=str)
-    parser.add_argument('-p', '--proxy', help='HTTP proxy string', required=True, type=str)
+    parser.add_argument('-p', '--proxy', help='HTTP proxy string', required=False, type=str) # Changed required to False
     parser.add_argument("-q", "--quiet", action="store_true")
     args = parser.parse_args()
     return args
@@ -31,10 +27,14 @@ def get_url_list(url):
 
 async def get(url, session, proxy, no_output):
     try:
-        async with session.get(url=url,proxy=proxy,timeout=5) as response:
+        params = {"url": url, "timeout": 5}
+        if proxy: # Add proxy if provided
+            params["proxy"] = proxy
+        async with session.get(**params) as response:
             resp = await response.read()
             if not no_output:
-                print(f"{url} -> {response.status} {response.headers['CF-Cache-Status']}")
+                cache_status = response.headers.get('CF-Cache-Status', 'UNKNOWN') # Use get method with a default value
+                print(f"{url} -> {response.status} {cache_status}")
     except Exception as e:
         print(f"{url} -> {str(e)}")
 

@@ -1,5 +1,23 @@
-#!/usr/bin/bash
+#!/bin/bash
 
-/usr/bin/python3 cache-warmer.py --url https://www.seenlyst.com/sitemap_index.xml -p "http://username:password@my-kua.pvdata.host:8080" -q
-/usr/bin/python3 cache-warmer.py --url https://www.seenlyst.com/sitemap_index.xml -p "http://username:password@jp-tok.pvdata.host:8080" -q
-/usr/bin/python3 cache-warmer.py --url https://www.seenlyst.com/sitemap_index.xml -p "http://username:password@sg-sin.pvdata.host:8080" -q
+cd /home/ubuntu/cache-warmer
+
+declare -a urls=(
+    "https://www.seenlyst.com/sitemap_index.xml"
+)
+
+declare -a proxies=(
+    ""
+    "http://user:pass@host:port"
+)
+
+for url in "${urls[@]}"; do
+    for proxy in "${proxies[@]}"; do
+        if [ -z "$proxy" ]; then
+            command="/usr/bin/python3 cache-warmer.py --url $url -q"
+        else
+            command="/usr/bin/python3 cache-warmer.py --url $url -p \"$proxy\" -q"
+        fi
+        eval $command
+    done
+done

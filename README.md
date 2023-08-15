@@ -14,7 +14,7 @@ Use proxy to send http request to URLs defined by sitemap.xml, helps warming up 
 ```
 
 ### How to use:
-Add as many line of command into warmcache.sh, then setup cron job to run the script.
+Add as many line of proxies or urls into warmcache.sh, then setup cron job to run the script.
 
 
 ---
